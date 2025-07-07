@@ -1,4 +1,4 @@
-module simplejrpc-go
+module github.com/DemonZack/simplejrpc-go
 
 go 1.23.4
 
