@@ -1,8 +1,8 @@
 package main
 
 import (
+	rpc "github.com/DemonZack/simplejrpc-go"
 	"github.com/DemonZack/simplejrpc-go/net/gsock"
-	"github.com/DemonZack/simplejrpc-go/server"
 )
 
 type CustomHandler struct{}
@@ -23,7 +23,7 @@ func (c *CustomHandler) ProcessResponse(resp any) (any, error) {
 func main() {
 	mockSockPath := "zack.sock"
 
-	ds := server.NewDefaultServer(
+	ds := rpc.NewDefaultServer(
 		gsock.WithJsonRpcSimpleServiceHandler(gsock.NewJsonRpcSimpleServiceHandler()),
 		gsock.WithJsonRpcSimpleServiceMiddlewares([]gsock.RPCMiddleware{
 			&CustomMiddleware{},

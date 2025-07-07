@@ -1,4 +1,4 @@
-package server
+package simplejrpc
 
 import (
 	"github.com/DemonZack/simplejrpc-go/net/gsock"
