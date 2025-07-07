@@ -7,20 +7,33 @@ import (
 	"github.com/sourcegraph/jsonrpc2"
 )
 
-// RPCClient provides JSON-RPC 2.0 client functionality over Unix domain sockets
+// RPCClient provides JSON-RPC 2.0 client functionality over Unix domain sockets.
+// It manages connection lifecycle and request/response handling through a configurable adapter.
+//
+// Fields:
+//   - sockPath:  Filesystem path to the Unix domain socket (e.g., "/tmp/rpc.sock")
+//   - adapter:   Protocol adapter implementing the ClientAdapter interface (defaults to JSON-RPC)
+//   - idCounter: Atomic counter for generating unique request IDs
+//   - keepLive:  Flag controlling whether connections should be kept alive after requests
 type rpcClient struct {
 	sockPath  string        // Path to the Unix domain socket
 	adapter   ClientAdapter // Protocol adapter (defaults to JSON-RPC)
 	idCounter int64         // Atomic counter for generating request IDs
+	keepLive  bool          // Connection persistence flag
 }
 
-// NewRPCClient creates a new RPC client instance configured for Unix domain sockets
+// NewRpcKeepLivClient creates a new RPC client with connection persistence disabled.
+// Connections will remain open after requests (caller must manage cleanup).
 //
 // Parameters:
-//   - socketPath: Filesystem path to the Unix domain socket (e.g. "/tmp/rpc.sock")
+//   - socketPath: Absolute filesystem path to the Unix domain socket
 //
 // Returns:
-//   - *RPCClient: A new client instance ready for making RPC calls
+//   - *rpcClient: Initialized client instance ready for RPC calls
+//
+// Note:
+//
+//	Uses JsonRpcSimpleClient as the default adapter
 func NewRpcSimpleClient(socketPath string) *rpcClient {
 	return &rpcClient{
 		sockPath:  socketPath,
@@ -29,30 +42,62 @@ func NewRpcSimpleClient(socketPath string) *rpcClient {
 	}
 }
 
-// Request makes a JSON-RPC 2.0 method call and decodes the response
+// NewRpcSimpleClient creates a new RPC client with connection persistence enabled.
+// The client will automatically close connections after each request.
 //
 // Parameters:
-//   - ctx: Context for request cancellation/timeout
-//   - method: RPC method name to call
-//   - params: Input parameters (will be JSON-encoded)
-//   - result: Pointer to struct for decoding the response
-//   - opts: Additional JSON-RPC 2.0 call options
+//   - socketPath: Absolute filesystem path to the Unix domain socket
 //
 // Returns:
-//   - error: Any error that occurred during the RPC call
+//   - *rpcClient: Initialized client instance with keepalive disabled
+//
+// Note:
+//
+//	Uses JsonRpcSimpleClient as the default adapter
+func NewRpcKeepLivClient(socketPath string) *rpcClient {
+	return &rpcClient{
+		sockPath:  socketPath,
+		adapter:   &JsonRpcSimpleClient{},
+		idCounter: 0,
+		keepLive:  true,
+	}
+}
+
+// Request executes a JSON-RPC 2.0 method call and handles response decoding.
+// Automatically manages connection establishment, request ID generation, and error handling.
+//
+// Parameters:
+//   - ctx:       Context for cancellation and timeout control
+//   - method:    RPC method name to invoke
+//   - params:    Input parameters (will be JSON-serialized)
+//   - result:    Pointer to structure for response deserialization
+//   - opts:      Optional JSON-RPC 2.0 call configurations
+//
+// Returns:
+//   - error:     nil on success, or error describing failure:
+//   - Connection errors
+//   - Protocol errors
+//   - Deserialization errors
 //
 // Example:
 //
-//	var result MyResult
-//	err := client.Request(ctx, "MyMethod", MyParams{}, &result)
+//	var response ResponseStruct
+//	err := client.Request(
+//	    context.Background(),
+//	    "Service.Method",
+//	    RequestParams{Field: "value"},
+//	    &response,
+//	)
 func (c *rpcClient) Request(ctx context.Context, method string, params, result any, opts ...jsonrpc2.CallOption) error {
 	conn, err := net.Dial("unix", c.sockPath)
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
+	if !c.keepLive {
+		defer conn.Close()
+	}
 
-	// 添加自定义ID生成器选项
+	// Generate monotonic request ID
 	c.idCounter++
 	idOpt := jsonrpc2.PickID(jsonrpc2.ID{Num: uint64(c.idCounter)})
 	opts = append(opts, idOpt)
