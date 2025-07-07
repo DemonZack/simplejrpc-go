@@ -54,7 +54,7 @@ func NewRpcSimpleClient(socketPath string) *rpcClient {
 // Note:
 //
 //	Uses JsonRpcSimpleClient as the default adapter
-func NewRpcKeepLivClient(socketPath string) *rpcClient {
+func NewRpcKeepLiveClient(socketPath string) *rpcClient {
 	return &rpcClient{
 		sockPath:  socketPath,
 		adapter:   &JsonRpcSimpleClient{},
