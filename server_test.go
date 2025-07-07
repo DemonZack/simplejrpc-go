@@ -32,7 +32,7 @@ func TestJsonDefaultRpcServer(t *testing.T) {
 		gsock.WithJsonRpcSimpleServiceHandler(gsock.NewJsonRpcSimpleServiceHandler()),
 		gsock.WithJsonRpcSimpleServiceMiddlewares([]gsock.RPCMiddleware{
 			&CustomMiddleware{},
-		}),
+		}...),
 	)
 
 	err := ds.StartServer(mockSockPath)
@@ -93,7 +93,7 @@ func TestJsonDefaultValidateRpcServer(t *testing.T) {
 		gsock.WithJsonRpcSimpleServiceHandler(gsock.NewJsonRpcSimpleServiceHandler()),
 		gsock.WithJsonRpcSimpleServiceMiddlewares([]gsock.RPCMiddleware{
 			&CustomMiddleware{},
-		}),
+		}...),
 	)
 
 	hand := &CustomHandler{}
@@ -112,7 +112,7 @@ func TestJsonDefaultRpcServerWithHandleMiddleware(t *testing.T) {
 		gsock.WithJsonRpcSimpleServiceHandler(gsock.NewJsonRpcSimpleServiceHandler()),
 		gsock.WithJsonRpcSimpleServiceMiddlewares([]gsock.RPCMiddleware{
 			&CustomMiddleware{},
-		}),
+		}...),
 	)
 
 	hand := &CustomHandler{}

@@ -16,9 +16,7 @@ func (s *AppServer) Run() {
 
 	ds := rpc.NewDefaultServer(
 		gsock.WithJsonRpcSimpleServiceHandler(gsock.NewJsonRpcSimpleServiceHandler()),
-		gsock.WithJsonRpcSimpleServiceMiddlewares([]gsock.RPCMiddleware{
-			&CustomMiddleware{},
-		}),
+		gsock.WithJsonRpcSimpleServiceMiddlewares(),
 	)
 
 	hand := &CustomHandler{}

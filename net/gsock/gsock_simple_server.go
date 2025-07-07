@@ -7,8 +7,9 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/DemonZack/simplejrpc-go/container/garray"
 	"github.com/sourcegraph/jsonrpc2"
+
+	"github.com/DemonZack/simplejrpc-go/container/garray"
 )
 
 // JsonRpcSimpleServiceHandler implements IRpcServiceHandle for processing JSON-RPC 2.0 requests.
@@ -147,7 +148,7 @@ func WithJsonRpcSimpleServiceHandler(hand IRpcServiceHandle) JsonRpcSimpleServic
 // WithJsonRpcSimpleServiceMiddlewares creates a configuration function to set service middleware.
 // middlewares: Middleware chain to configure
 // Returns: Configuration function
-func WithJsonRpcSimpleServiceMiddlewares(middlewares []RPCMiddleware) JsonRpcSimpleServiceOptionFunc {
+func WithJsonRpcSimpleServiceMiddlewares(middlewares ...RPCMiddleware) JsonRpcSimpleServiceOptionFunc {
 	return func(s *JsonRpcSimpleService) {
 		s.middlewares = append(s.middlewares, middlewares...)
 	}

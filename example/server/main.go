@@ -27,7 +27,7 @@ func main() {
 		gsock.WithJsonRpcSimpleServiceHandler(gsock.NewJsonRpcSimpleServiceHandler()),
 		gsock.WithJsonRpcSimpleServiceMiddlewares([]gsock.RPCMiddleware{
 			&CustomMiddleware{},
-		}),
+		}...),
 	)
 
 	hand := &CustomHandler{}
