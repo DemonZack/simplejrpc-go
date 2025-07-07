@@ -11,7 +11,7 @@
 
 ## 安装
 ```sh
-go get simplejrpc-go
+go get github.com/DemonZack/simplejrpc-go
 ```
 
 ## 配置管理
