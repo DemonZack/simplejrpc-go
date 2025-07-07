@@ -3,10 +3,10 @@ package main
 import (
 	"path/filepath"
 
-	"simplejrpc-go/core"
-	"simplejrpc-go/core/config"
-	"simplejrpc-go/example/app/server"
-	"simplejrpc-go/os/gpath"
+	"github.com/DemonZack/simplejrpc-go/core"
+	"github.com/DemonZack/simplejrpc-go/core/config"
+	"github.com/DemonZack/simplejrpc-go/example/app/server"
+	"github.com/DemonZack/simplejrpc-go/os/gpath"
 )
 
 func main() {

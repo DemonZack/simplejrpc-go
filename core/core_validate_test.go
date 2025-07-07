@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"simplejrpc-go/core/config"
-	"simplejrpc-go/core/gvalid"
-	"simplejrpc-go/os/gpath"
+	"github.com/DemonZack/simplejrpc-go/core/config"
+	"github.com/DemonZack/simplejrpc-go/core/gvalid"
+	"github.com/DemonZack/simplejrpc-go/os/gpath"
 )
 
 // Verification rules: You can implement them yourself according to the basic template provided

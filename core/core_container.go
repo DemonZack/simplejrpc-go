@@ -3,9 +3,9 @@ package core
 import (
 	"go.uber.org/zap"
 
-	"simplejrpc-go/core/config"
-	"simplejrpc-go/core/glog"
-	"simplejrpc-go/core/gvalid"
+	"github.com/DemonZack/simplejrpc-go/core/config"
+	"github.com/DemonZack/simplejrpc-go/core/glog"
+	"github.com/DemonZack/simplejrpc-go/core/gvalid"
 )
 
 // WithContainerFunc defines a function type for configuring the container
